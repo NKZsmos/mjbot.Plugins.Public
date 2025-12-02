@@ -19,7 +19,7 @@ using mjbot.Configurations;
 
 namespace mjbot.Plugins;
 
-[PluginIdentifier("1e1e623a-d89d-49ad-b801-f93dd94cf2d7", Index = 1)]
+[PluginIdentifier("1e1e623a-d89d-49ad-b801-f93dd94cf2d7", Index = 1, Authors = "name", Scope = "game")]
 class DemoPlugin(ILogger<DemoPlugin> logger,
     IConfiguration<TestConfiguration> configuration,
     IRichMessageConverter richMessageConverter,

@@ -41,8 +41,8 @@ using MilkiBotFramework.Plugining.Attributes;
 
 namespace mjbot.Plugins;
 
-// PluginIdentifier 用于唯一标识插件，GUID 需要生成一个新的，Index 决定加载顺序，一般默认不写即可
-[PluginIdentifier("YOUR-GUID-HERE", Index = 10)]
+// PluginIdentifier 用于唯一标识插件，GUID 需要生成一个新的，Index 决定加载顺序，一般默认不写即可，Scope一般用于帮助插件的分类
+[PluginIdentifier("YOUR-GUID-HERE", Index = 10, Authors = "您的署名", Scope = "插件分类")]
 public class MyFirstPlugin : BasicPlugin
 {
     // 简单的指令处理

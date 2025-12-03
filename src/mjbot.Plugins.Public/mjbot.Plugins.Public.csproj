@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CHTCHSConv" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\dependencies\MilkiBotFramework\src\MilkiBotFramework\MilkiBotFramework.csproj" />
   </ItemGroup>
 

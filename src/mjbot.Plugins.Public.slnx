@@ -5,5 +5,8 @@
     <Project Path="../dependencies/MilkiBotFramework/src/MilkiBotFramework/MilkiBotFramework.csproj" />
     <Project Path="../dependencies/MilkiBotFramework/src/Platforms/MilkiBotFramework.Platforms.QQ/MilkiBotFramework.Platforms.QQ.csproj" />
   </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Tests/PluginTests/PluginTests.csproj" Id="3aaad00a-1e76-4b87-a184-7f4210f610d4" />
+  </Folder>
   <Project Path="mjbot.Plugins.Public/mjbot.Plugins.Public.csproj" />
 </Solution>

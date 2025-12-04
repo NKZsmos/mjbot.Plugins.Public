@@ -12,11 +12,12 @@ using Microsoft.International.Converters.TraditionalChineseToSimplifiedConverter
 using MilkiBotFramework.Messaging;
 using MilkiBotFramework.Plugining;
 using MilkiBotFramework.Plugining.Attributes;
+using MilkiBotFramework.Services;
 
 namespace mjbot.Plugins;
 
 [PluginIdentifier("CD18B6F0-A703-7A7D-98DA-1BCBE5585890", Index = 1, Authors = "isaax", Scope = "mjbot")]
-public class Crocodile : BasicPlugin
+public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
 {
     private static readonly Encoding EucJp = Encoding.GetEncoding(51932);
     private static readonly Encoding Gbk = Encoding.GetEncoding(936);
@@ -27,7 +28,7 @@ public class Crocodile : BasicPlugin
     ]);
 
     [CommandHandler("goose")]
-    public IResponse? Goose([Argument] string content)
+    public async Task<IResponse?> Goose([Argument] string content)
     {
         if (string.IsNullOrEmpty(content))
         {
@@ -57,6 +58,14 @@ public class Crocodile : BasicPlugin
             }
         }
 
-        return Reply(sb.ToString());
+        var sanitizedString = await GetSanitizedStringAsync(sb.ToString());
+        return Reply(sanitizedString);
+    }
+
+    private async Task<string?> GetSanitizedStringAsync(string message)
+    {
+        var sensitiveScanResults = await sensitiveScanService.GetScanResultsAsync([message]);
+        var sanitizedString = sensitiveScanService.SanitizeString(message, sensitiveScanResults[0]);
+        return sanitizedString;
     }
 }

@@ -26,7 +26,7 @@ public class Crocodile : BasicPlugin
         '‘', '’', '【', '】', '…', '（', '）'
     ]);
 
-    [CommandHandler("goose", AllowedMessageType = MessageType.Channel)]
+    [CommandHandler("goose")]
     public IResponse? Goose([Argument] string content)
     {
         if (string.IsNullOrEmpty(content))

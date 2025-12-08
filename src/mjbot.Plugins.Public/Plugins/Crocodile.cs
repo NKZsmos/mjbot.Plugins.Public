@@ -8,6 +8,7 @@
 
 using System.Buffers;
 using System.Text;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.International.Converters.TraditionalChineseToSimplifiedConverter;
 using MilkiBotFramework.Messaging;
 using MilkiBotFramework.Plugining;
@@ -28,24 +29,25 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
     ]);
 
     [CommandHandler("goose")]
-    public async Task<IResponse?> Goose([Argument] string content)
+    public async Task<IResponse?> Goose(MessageContext context)
     {
-        if (string.IsNullOrEmpty(content))
+        var param = context.CommandLineResult.SimpleArgument.ToString();
+        if (string.IsNullOrEmpty(param))
         {
             return null;
         }
 
-        string? traditional = ChineseConverter.Convert(content, ChineseConversionDirection.SimplifiedToTraditional);
+        string traditional = ChineseConverter.Convert(param, ChineseConversionDirection.SimplifiedToTraditional).Replace('爲', '為');
         byte[] bytes = EucJp.GetBytes(traditional);
         string result = Gbk.GetString(bytes);
 
         StringBuilder sb = new(result.Length);
 
-        int length = Math.Min(result.Length, content.Length);
+        int length = Math.Min(result.Length, param.Length);
 
         for (int i = 0; i < length; i++)
         {
-            char originalChar = content[i];
+            char originalChar = param[i];
             char glitchedChar = result[i];
 
             if (glitchedChar == '?' || ProtectedChars.Contains(originalChar))

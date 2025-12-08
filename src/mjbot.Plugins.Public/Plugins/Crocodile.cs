@@ -27,24 +27,25 @@ public class Crocodile : BasicPlugin
     ]);
 
     [CommandHandler("goose")]
-    public IResponse? Goose([Argument] string content)
+    public IResponse? Goose(MessageContext context)
     {
-        if (string.IsNullOrEmpty(content))
+        var param = context.CommandLineResult.SimpleArgument.ToString();
+        if (string.IsNullOrEmpty(param))
         {
             return null;
         }
 
-        string? traditional = ChineseConverter.Convert(content, ChineseConversionDirection.SimplifiedToTraditional);
+        string? traditional = ChineseConverter.Convert(param, ChineseConversionDirection.SimplifiedToTraditional);
         byte[] bytes = EucJp.GetBytes(traditional);
         string result = Gbk.GetString(bytes);
 
         StringBuilder sb = new(result.Length);
 
-        int length = Math.Min(result.Length, content.Length);
+        int length = Math.Min(result.Length, param.Length);
 
         for (int i = 0; i < length; i++)
         {
-            char originalChar = content[i];
+            char originalChar = param[i];
             char glitchedChar = result[i];
 
             if (glitchedChar == '?' || ProtectedChars.Contains(originalChar))

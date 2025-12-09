@@ -8,6 +8,8 @@
 
 using System.Diagnostics;
 using System.Text;
+using MilkiBotFramework.Messaging;
+using MilkiBotFramework.Plugining.CommandLine;
 using mjbot.Plugins;
 
 namespace PluginTests;
@@ -25,7 +27,16 @@ public class GeneralFunctionTests
         const string input = "以一星期为一期";
 
         var crocodile = new Crocodile(new DummySensitiveScanService());
-        var response = await crocodile.Goose(input);
+        var messageContext = new MessageContext(new DefaultRichMessageConverter())
+        {
+            TextMessage = input
+        };
+        var commandLineResult = new CommandLineResult(CommandLineAuthority.Public, null, [], [], input.AsMemory());
+        typeof(MessageContext)
+            .GetProperty(nameof(MessageContext.CommandLineResult))!
+            .SetValue(messageContext, commandLineResult);
+
+        var response = await crocodile.Goose(messageContext);
         Debug.Assert(response?.Message != null, "result.Message != null");
         var result = await response.Message.EncodeAsync();
 

@@ -8,7 +8,6 @@
 
 using System.Buffers;
 using System.Text;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.International.Converters.TraditionalChineseToSimplifiedConverter;
 using MilkiBotFramework.Messaging;
 using MilkiBotFramework.Plugining;
@@ -36,7 +35,7 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
     private static string Convert1(string origin)
     {
         string traditional = ChineseConverter.Convert(origin, ChineseConversionDirection.SimplifiedToTraditional).Replace('爲', '為'); // 先转换为繁体
-        byte[] bytes = EucJp.GetBytes(traditional); 
+        byte[] bytes = EucJp.GetBytes(traditional);
         string result = Gbk.GetString(bytes); // 转鹅语
 
         StringBuilder sb = new(result.Length);
@@ -57,6 +56,7 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
                 sb.Append(glitchedChar);
             }
         }
+
         return sb.ToString();
     }
 
@@ -88,6 +88,7 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
                 sb.Append(glitchedChar);
             }
         }
+
         return sb.ToString();
     }
 
@@ -99,12 +100,14 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
     [CommandHandler("goose")]
     public async Task<IResponse?> Goose(MessageContext context)
     {
-        var param = context.CommandLineResult.SimpleArgument.ToString();
+        var param = context.CommandLineResult?.SimpleArgument.ToString();
         if (string.IsNullOrEmpty(param))
         {
             return null;
         }
+
         var sanitizedString = await GetSanitizedStringAsync(Convert1(param));
+        if (string.IsNullOrWhiteSpace(sanitizedString)) return null;
         return Reply(sanitizedString);
     }
 
@@ -116,12 +119,14 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
     [CommandHandler("goose2")]
     public async Task<IResponse?> Goose2(MessageContext context)
     {
-        var param = context.CommandLineResult.SimpleArgument.ToString();
+        var param = context.CommandLineResult?.SimpleArgument.ToString();
         if (string.IsNullOrEmpty(param))
         {
             return null;
         }
+
         var sanitizedString = await GetSanitizedStringAsync(Convert2(param));
+        if (string.IsNullOrWhiteSpace(sanitizedString)) return null;
         return Reply(sanitizedString);
     }
 
@@ -133,18 +138,20 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
     [CommandHandler("goose3")]
     public async Task<IResponse?> Goose3(MessageContext context)
     {
-        var param = context.CommandLineResult.SimpleArgument.ToString();
+        var param = context.CommandLineResult?.SimpleArgument.ToString();
         if (string.IsNullOrEmpty(param))
         {
             return null;
         }
+
         string result = param;
-        while (!(result == Convert1(result)))
+        while (result != Convert1(result))
         {
             result = Convert1(result);
         }
 
         var sanitizedString = await GetSanitizedStringAsync(result);
+        if (string.IsNullOrWhiteSpace(sanitizedString)) return null;
         return Reply(sanitizedString);
     }
 
@@ -156,18 +163,20 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
     [CommandHandler("goose4")]
     public async Task<IResponse?> Goose4(MessageContext context)
     {
-        var param = context.CommandLineResult.SimpleArgument.ToString();
+        var param = context.CommandLineResult?.SimpleArgument.ToString();
         if (string.IsNullOrEmpty(param))
         {
             return null;
         }
+
         string result = param;
-        while (!(result == Convert2(result)))
+        while (result != Convert2(result))
         {
             result = Convert2(result);
         }
 
         var sanitizedString = await GetSanitizedStringAsync(result);
+        if (string.IsNullOrWhiteSpace(sanitizedString)) return null;
         return Reply(sanitizedString);
     }
 
@@ -179,11 +188,12 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
     [CommandHandler("goose5")]
     public async Task<IResponse?> Goose5(MessageContext context)
     {
-        var param = context.CommandLineResult.SimpleArgument.ToString();
+        var param = context.CommandLineResult?.SimpleArgument.ToString();
         if (string.IsNullOrEmpty(param))
         {
             return null;
         }
+
         StringBuilder sb = new StringBuilder();
         sb.Append(param);
         sb.Append("          ");
@@ -195,8 +205,10 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
         }
 
         var sanitizedString = await GetSanitizedStringAsync(result);
+        if (string.IsNullOrWhiteSpace(sanitizedString)) return null;
         return Reply(sanitizedString);
     }
+
     private async Task<string?> GetSanitizedStringAsync(string message)
     {
         var sensitiveScanResults = await sensitiveScanService.GetScanResultsAsync([message]);

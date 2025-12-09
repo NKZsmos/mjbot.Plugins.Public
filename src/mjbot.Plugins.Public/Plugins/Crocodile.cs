@@ -6,22 +6,23 @@
  * Copyright (c) 2025 BJMANIA
  */
 
-using System.Buffers;
-using System.ComponentModel;
-using System.Text;
 using Microsoft.International.Converters.TraditionalChineseToSimplifiedConverter;
 using MilkiBotFramework.Messaging;
 using MilkiBotFramework.Plugining;
 using MilkiBotFramework.Plugining.Attributes;
 using MilkiBotFramework.Services;
+using System;
+using System.Buffers;
+using System.ComponentModel;
+using System.Text;
 
 namespace mjbot.Plugins;
 
-[PluginIdentifier("CD18B6F0-A703-7A7D-98DA-1BCBE5585890", Index = 1, Authors = "isaax", Scope = "mjbot")]
+[PluginIdentifier("CD18B6F0-A703-7A7D-98DA-1BCBE5585890", Index = 1, Authors = "Isaax", Scope = "mjbot")]
 [Description("鳄鱼插件")]
 public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
 {
-    private const int MaxLoopCount = 10000;
+    private const int MaxLoopCount = 1000;
     private static readonly Encoding EucJp = Encoding.GetEncoding(51932);
     private static readonly Encoding Gbk = Encoding.GetEncoding(936);
 
@@ -78,15 +79,16 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
 
         StringBuilder sb = new(simplified.Length);
 
-        int length = simplified.Length; // 以中文为长度上限，可能超过上限
+        int length = Math.Min(simplified.Length, origin.Length); // 以原句和鹅语两者中短的为长度上限
 
         for (int i = 0; i < length; i++)
         {
             char glitchedChar = simplified[i];
+            char originalChar = origin[i];
 
-            if (glitchedChar == '?' && i < origin.Length)
+            if (glitchedChar == '?' || ProtectedChars.Contains(originalChar))
             {
-                sb.Append(origin[i]);
+                sb.Append(originalChar);
             }
             else
             {
@@ -194,12 +196,12 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
     }
 
     /// <summary>
-    /// 中文转乱码鹅语指令（实际为鹅语加很多空格后转特征中文）
+    /// 中文转乱码鹅语指令（和windows不一样，尽量别用）
     /// </summary>
     /// <param name="context">所有参数（含空格）</param>
     /// <returns></returns>
     [CommandHandler("goose5")]
-    [Description("中文转乱码鹅语指令（实际为鹅语加很多空格后转特征中文）")]
+    [Description("中文转乱码鹅语指令（和windows不一样，尽量别用）")]
     public async Task<IResponse?> Goose5(MessageContext context)
     {
         var param = context.CommandLineResult?.SimpleArgument.ToString();

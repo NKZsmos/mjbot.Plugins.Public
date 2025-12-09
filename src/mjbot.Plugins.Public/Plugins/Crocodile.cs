@@ -19,6 +19,7 @@ namespace mjbot.Plugins;
 [PluginIdentifier("CD18B6F0-A703-7A7D-98DA-1BCBE5585890", Index = 1, Authors = "isaax", Scope = "mjbot")]
 public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
 {
+    private const int MaxLoopCount = 10000;
     private static readonly Encoding EucJp = Encoding.GetEncoding(51932);
     private static readonly Encoding Gbk = Encoding.GetEncoding(936);
 
@@ -79,7 +80,7 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
         {
             char glitchedChar = simplified[i];
 
-            if (glitchedChar == '?')
+            if (glitchedChar == '?' && i < origin.Length)
             {
                 sb.Append(origin[i]);
             }
@@ -145,9 +146,11 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
         }
 
         string result = param;
-        while (result != Convert1(result))
+        int count = 0;
+        while (result != Convert1(result) && count < MaxLoopCount)
         {
             result = Convert1(result);
+            count++;
         }
 
         var sanitizedString = await GetSanitizedStringAsync(result);
@@ -170,9 +173,11 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
         }
 
         string result = param;
-        while (result != Convert2(result))
+        int count = 0;
+        while (result != Convert2(result) && count < MaxLoopCount)
         {
             result = Convert2(result);
+            count++;
         }
 
         var sanitizedString = await GetSanitizedStringAsync(result);

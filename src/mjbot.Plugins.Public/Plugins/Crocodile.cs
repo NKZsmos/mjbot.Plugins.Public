@@ -88,7 +88,7 @@ public class Crocodile(ISensitiveScanService sensitiveScanService) : BasicPlugin
             char glitchedChar = simplified[i];
             char originalChar = origin[i];
 
-            if (glitchedChar == '?' || ProtectedChars.Contains(originalChar))
+            if (glitchedChar == '・' || glitchedChar == '?' || ProtectedChars.Contains(originalChar))
             {
                 sb.Append(originalChar);
             }
